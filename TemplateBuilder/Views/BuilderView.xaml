@@ -16,13 +16,21 @@
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
                         <avalonDock:LayoutAnchorablePane>
                             <avalonDock:LayoutAnchorable Title="Toolbox">
-                                <views:ToolboxView DataContext="{Binding Toolbox}"/>
+                                <views:ToolboxView DataContext="{Binding Toolbox}" />
+                            </avalonDock:LayoutAnchorable>
+                        </avalonDock:LayoutAnchorablePane>
+                        <avalonDock:LayoutAnchorablePane>
+                            <avalonDock:LayoutAnchorable Title="Toolbox">
+                                <ListBox ItemsSource="{Binding Controls, Mode=TwoWay}" 
+                                         AllowDrop="True" 
+                                         Drop="ListBox_Drop" 
+                                         DisplayMemberPath="Name"></ListBox>
                             </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
                     <avalonDock:LayoutAnchorablePane DockWidth="5*">
                         <avalonDock:LayoutAnchorable CanAutoHide="False" CanFloat="False" CanHide="False" CanClose="False">
-                            <Canvas/>
+                            <Canvas x:Name="cContainer" Margin="20"/>
                         </avalonDock:LayoutAnchorable>
                     </avalonDock:LayoutAnchorablePane>
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">

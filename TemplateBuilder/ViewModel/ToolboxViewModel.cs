@@ -33,11 +33,12 @@ namespace TemplateBuilder.ViewModel
 
         public ToolboxViewModel()
         {
+            /// Data Dumy
             var controls = new Collection<CustomControl>
             {
-                new CustomControl{Name = "Control 1"},
-                new CustomControl{Name = "Control 2"},
-                new CustomControl{Name = "Control 3"},
+                new CustomControl{Name = "TextBox", TheControl = new TextBox(){ Text = "It's TextBox", Width = 80}},
+                new CustomControl{Name = "RadioButton", TheControl = new RadioButton() { Content = "I's RadioButton" }},
+                new CustomControl{Name = "CheckBox", TheControl = new CheckBox() { Content = "I's CheckBox" }},
                 new CustomControl{Name = "Control 4"},
                 new CustomControl{Name = "Control 5"}
             };
