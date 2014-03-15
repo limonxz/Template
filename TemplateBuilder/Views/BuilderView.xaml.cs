@@ -1,8 +1,12 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Win32;
 using TemplateBuilder.Model;
+using TemplateBuilder.Model.Messages;
 
 namespace TemplateBuilder.Views
 {
@@ -24,6 +28,8 @@ namespace TemplateBuilder.Views
         {
             InitializeComponent();
             Messenger.Default.Register<CustomControl>(this, (dat) => ActionHandler(dat));
+            Messenger.Default.Register<SaveProjectMessage>(this, SaveProject);
+            Messenger.Default.Register<OpenProjectMessage>(this, OpenProject);
         }
 
         /// <summary>
@@ -49,7 +55,9 @@ namespace TemplateBuilder.Views
                 data.TheControl.PreviewMouseMove += MouseMove;
                 data.TheControl.Cursor = Cursors.Hand;
 
-                cContainer.Children.Add(data.TheControl);
+                ProjectView.ProjectTemplate.Children.Add(data.TheControl);
+
+                //cContainer.Children.Add(data.TheControl);
             }
         }
 
@@ -79,6 +87,38 @@ namespace TemplateBuilder.Views
 
                 ctrl.SetValue(Canvas.LeftProperty, e.GetPosition((sender as Control).Parent as Control).X - _XPos - 20);
                 ctrl.SetValue(Canvas.TopProperty, e.GetPosition((sender as Control).Parent as Control).Y - _YPos - 20);
+            }
+        }
+
+        private void SaveProject(SaveProjectMessage msg)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            
+            var result = saveFileDialog.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                using (var fs = new FileStream(saveFileDialog.FileName, FileMode.Open, FileAccess.ReadWrite))
+                {
+                    XamlWriter.Save(ProjectView.ProjectTemplate, fs);
+                }
+
+                ProjectView.ProjectTemplate.Children.Clear();
+            }
+        }
+
+        private void OpenProject(OpenProjectMessage msg)
+        {
+            var openFileDialog = new OpenFileDialog();
+            var result = openFileDialog.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                using (var mysr = new StreamReader(openFileDialog.FileName))
+                {
+                    var rootObject = XamlReader.Load(mysr.BaseStream) as Grid;
+
+                    if (rootObject != null) ProjectView.Content = rootObject;
+                }
             }
         }
     }

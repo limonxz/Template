@@ -90,6 +90,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Infrastructure\Registries\ViewModelsRegistry.cs" />
+    <Compile Include="Model\Messages\OpenProjectMessage.cs" />
+    <Compile Include="Model\Messages\SaveProjectMessage.cs" />
     <Compile Include="ViewModel\BuilderViewModel.cs" />
     <Compile Include="Model\CustomControl.cs" />
     <Compile Include="ViewModel\Interfaces\IBuilderViewModel.cs" />
@@ -105,6 +107,9 @@
     <Compile Include="ViewModel\ToolboxViewModel.cs" />
     <Compile Include="Views\BuilderView.xaml.cs">
       <DependentUpon>BuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectView.xaml.cs">
+      <DependentUpon>ProjectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PropertiesView.xaml.cs">
       <DependentUpon>PropertiesView.xaml</DependentUpon>
@@ -143,6 +148,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\BuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

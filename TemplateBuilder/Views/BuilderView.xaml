@@ -9,7 +9,13 @@
         xmlns:views="clr-namespace:TemplateBuilder.Views"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:BuilderViewModel}">
-    <Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Command="{Binding OpenProject}"></MenuItem>
+                <MenuItem Header="_Save" Command="{Binding SaveProject}"></MenuItem>
+            </MenuItem>
+        </Menu>
         <avalonDock:DockingManager x:Name="dockingManager">
             <avalonDock:LayoutRoot>
                 <avalonDock:LayoutPanel Orientation="Horizontal">
@@ -29,8 +35,11 @@
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
                     <avalonDock:LayoutAnchorablePane DockWidth="5*">
-                        <avalonDock:LayoutAnchorable CanAutoHide="False" CanFloat="False" CanHide="False" CanClose="False">
-                            <Canvas x:Name="cContainer" Margin="20"/>
+                        <avalonDock:LayoutAnchorable x:Name="ProjectLayoutAnchorable" CanAutoHide="False" CanFloat="False" CanHide="False" CanClose="False">
+                            <!--<Canvas x:Name="cContainer" Margin="20">
+                                <Button Content="Save" Click="Button_Click"></Button>
+                            </Canvas>-->
+                            <views:ProjectView x:Name="ProjectView"></views:ProjectView>
                         </avalonDock:LayoutAnchorable>
                     </avalonDock:LayoutAnchorablePane>
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
@@ -43,5 +52,5 @@
                 </avalonDock:LayoutPanel>
             </avalonDock:LayoutRoot>
         </avalonDock:DockingManager>
-    </Grid>
+    </DockPanel>
 </Window>
