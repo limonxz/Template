@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GalaSoft.MvvmLight.Messaging;
+using TemplateBuilder.Model;
 
 namespace TemplateBuilder.Views
 {
@@ -23,6 +25,19 @@ namespace TemplateBuilder.Views
         public ProjectView()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Get the item from other Listbox
+        /// </summary>
+        void ListBox_Drop(object sender, DragEventArgs e)
+        {
+            //var parent = (StackPanel)sender;
+            var data = (CustomControl)e.Data.GetData(typeof(CustomControl));
+            //parent.Children.Add(data.TheControl);
+            //parent.Items.Add(data);
+
+            Messenger.Default.Send<CustomControl>(data);
         }
     }
 }

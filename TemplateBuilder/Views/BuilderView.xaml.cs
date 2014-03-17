@@ -31,19 +31,7 @@ namespace TemplateBuilder.Views
             Messenger.Default.Register<SaveProjectMessage>(this, SaveProject);
             Messenger.Default.Register<OpenProjectMessage>(this, OpenProject);
         }
-
-        /// <summary>
-        /// Get the item from other Listbox
-        /// </summary>
-        void ListBox_Drop(object sender, DragEventArgs e)
-        {
-            var parent = (ListBox)sender;
-            var data = (CustomControl)e.Data.GetData(typeof(CustomControl));
-            parent.Items.Add(data);
-
-            Messenger.Default.Send<CustomControl>(data);
-        }
-
+        
         /// <summary>
         /// Action of Messenger (GalaSoft), to put the control inside the cambas
         /// </summary>
@@ -54,6 +42,7 @@ namespace TemplateBuilder.Views
                 data.TheControl.PreviewMouseLeftButtonDown += MouseLeftButtonDown;
                 data.TheControl.PreviewMouseMove += MouseMove;
                 data.TheControl.Cursor = Cursors.Hand;
+                
 
                 ProjectView.ProjectTemplate.Children.Add(data.TheControl);
 
@@ -115,7 +104,7 @@ namespace TemplateBuilder.Views
             {
                 using (var mysr = new StreamReader(openFileDialog.FileName))
                 {
-                    var rootObject = XamlReader.Load(mysr.BaseStream) as Grid;
+                    var rootObject = XamlReader.Load(mysr.BaseStream) as StackPanel;
 
                     if (rootObject != null) ProjectView.Content = rootObject;
                 }

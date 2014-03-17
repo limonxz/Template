@@ -28,9 +28,7 @@
                     </avalonDock:LayoutAnchorablePaneGroup>
                     <avalonDock:LayoutAnchorablePane DockWidth="5*">
                         <avalonDock:LayoutAnchorable CanAutoHide="False" CanFloat="False" CanHide="False" CanClose="False">
-                            <StackPanel Drop="ListBox_Drop" 
-                                  Height="Auto" Width="Auto" Background="Silver" AllowDrop="True">
-                            </StackPanel>
+                            <views:ProjectView x:Name="ProjectView"></views:ProjectView>
                         </avalonDock:LayoutAnchorable>
                     </avalonDock:LayoutAnchorablePane>
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
