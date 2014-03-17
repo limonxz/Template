@@ -31,7 +31,7 @@ namespace TemplateBuilder.Views
 
             if (data != null)
             {
-                DragDrop.DoDragDrop(parent, data, DragDropEffects.Move);
+                DragDrop.DoDragDrop(parent, data, DragDropEffects.Copy);
             }
         }
 
