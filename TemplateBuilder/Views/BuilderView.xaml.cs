@@ -22,21 +22,21 @@ namespace TemplateBuilder.Views
             Messenger.Default.Register<SaveProjectMessage>(this, SaveProject);
             Messenger.Default.Register<OpenProjectMessage>(this, OpenProject);
         }
-        
+
         private void SaveProject(SaveProjectMessage msg)
         {
             var saveFileDialog = new SaveFileDialog();
             saveFileDialog.ShowDialog();
             msg.FilePath = saveFileDialog.FileName;
-            msg.ProjectView = ProjectView;
-            }
+            msg.ProjectView = pvContainer;
+        }
 
         private void OpenProject(OpenProjectMessage msg)
         {
             var openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog();
             msg.FilePath = openFileDialog.FileName;
-            msg.ProjectView = ProjectView;
+            msg.ProjectView = pvContainer;
         }
     }
 }
