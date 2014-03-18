@@ -81,34 +81,18 @@ namespace TemplateBuilder.Views
 
         private void SaveProject(SaveProjectMessage msg)
         {
-            var saveFileDialog = new SaveFileDialog();
-            
-            var result = saveFileDialog.ShowDialog();
-
-            if (result.HasValue && result.Value)
-            {
-                using (var fs = new FileStream(saveFileDialog.FileName, FileMode.Open, FileAccess.ReadWrite))
-                {
-                    XamlWriter.Save(ProjectView.ProjectTemplate, fs);
-                }
-
-                ProjectView.ProjectTemplate.Children.Clear();
-            }
+            var saveFileDialog = new SaveFileDialog();            
+            saveFileDialog.ShowDialog();
+            msg.FilePath = saveFileDialog.FileName;
+            msg.ProjectView = ProjectView;
         }
 
         private void OpenProject(OpenProjectMessage msg)
         {
             var openFileDialog = new OpenFileDialog();
-            var result = openFileDialog.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                using (var mysr = new StreamReader(openFileDialog.FileName))
-                {
-                    var rootObject = XamlReader.Load(mysr.BaseStream) as StackPanel;
-
-                    if (rootObject != null) ProjectView.Content = rootObject;
-                }
-            }
+            openFileDialog.ShowDialog();
+            msg.FilePath = openFileDialog.FileName;
+            msg.ProjectView = ProjectView;
         }
     }
 }

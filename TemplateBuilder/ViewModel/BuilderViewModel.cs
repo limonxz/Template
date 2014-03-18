@@ -1,10 +1,14 @@
-﻿using System.Windows.Input;
+﻿using System.IO;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Markup;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using TemplateBuilder.Model.Messages;
 using TemplateBuilder.ViewModel.Interfaces;
+using TemplateBuilder.Views;
 
 namespace TemplateBuilder.ViewModel
 {
@@ -23,12 +27,34 @@ namespace TemplateBuilder.ViewModel
 
         private void OnSavingProject()
         {
-            Messenger.Default.Send(new SaveProjectMessage());
+            var saveProjectMessage = new SaveProjectMessage();
+            Messenger.Default.Send(saveProjectMessage);
+
+            if (!string.IsNullOrEmpty(saveProjectMessage.FilePath))
+            {
+                using (var fs = new FileStream(saveProjectMessage.FilePath, FileMode.CreateNew, FileAccess.ReadWrite))
+                {
+                    XamlWriter.Save(saveProjectMessage.ProjectView.ProjectTemplate, fs);
+                }
+
+                //saveProjectMessage.ProjectView.ProjectTemplate.Children.Clear();
+            }
         }
 
         private void OnOpeningProject()
         {
-            Messenger.Default.Send(new OpenProjectMessage());
+            var openProjectMessage = new OpenProjectMessage();
+            Messenger.Default.Send(openProjectMessage);
+
+            if (!string.IsNullOrEmpty(openProjectMessage.FilePath))
+            {
+                using (var mysr = new StreamReader(openProjectMessage.FilePath))
+                {
+                    var rootObject = XamlReader.Load(mysr.BaseStream) as StackPanel;
+
+                    if (rootObject != null) openProjectMessage.ProjectView.Content = rootObject;
+                }
+            }
         }
     }
 }
