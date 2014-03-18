@@ -92,6 +92,7 @@
     <Compile Include="Infrastructure\Registries\ViewModelsRegistry.cs" />
     <Compile Include="Model\Messages\OpenProjectMessage.cs" />
     <Compile Include="Model\Messages\SaveProjectMessage.cs" />
+    <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="ViewModel\BuilderViewModel.cs" />
     <Compile Include="Model\CustomControl.cs" />
     <Compile Include="ViewModel\Interfaces\IBuilderViewModel.cs" />

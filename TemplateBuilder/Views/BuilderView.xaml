@@ -19,6 +19,7 @@
         <avalonDock:DockingManager x:Name="dockingManager">
             <avalonDock:LayoutRoot>
                 <avalonDock:LayoutPanel Orientation="Horizontal">
+                    
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical" x:Name="lapgToolBox">
                         <avalonDock:LayoutAnchorablePane>
                             <avalonDock:LayoutAnchorable Title="Toolbox">
@@ -26,11 +27,13 @@
                             </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
+                    
                     <avalonDock:LayoutAnchorablePane DockWidth="5*">
                         <avalonDock:LayoutAnchorable CanAutoHide="False" CanFloat="False" CanHide="False" CanClose="False">
-                            <views:ProjectView x:Name="ProjectView"></views:ProjectView>
+                            <views:ProjectView x:Name="pvContainer" DataContext="{Binding Project}"></views:ProjectView>
                         </avalonDock:LayoutAnchorable>
                     </avalonDock:LayoutAnchorablePane>
+                    
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
                         <avalonDock:LayoutAnchorablePane>
                             <avalonDock:LayoutAnchorable Title="Properties">
@@ -38,6 +41,7 @@
                             </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
+                    
                 </avalonDock:LayoutPanel>
             </avalonDock:LayoutRoot>
         </avalonDock:DockingManager>

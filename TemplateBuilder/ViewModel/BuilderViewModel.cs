@@ -10,16 +10,21 @@ namespace TemplateBuilder.ViewModel
 {
     public class BuilderViewModel : ViewModelBase, IBuilderViewModel
     {
+        #region Properties
+
         public IProjectViewModel Project { get; set; }
         public IToolboxViewModel Toolbox { get; set; }
+
+        #endregion
+
+        #region Commands
+        
         public ICommand SaveProject { get { return new RelayCommand(OnSavingProject); } }
         public ICommand OpenProject { get { return new RelayCommand(OnOpeningProject); } }
 
-        public BuilderViewModel()
-        {
-            this.Project = ServiceLocator.Current.GetInstance<IProjectViewModel>();
-            this.Toolbox = ServiceLocator.Current.GetInstance<IToolboxViewModel>();
-        }
+        #endregion
+
+        #region Actions
 
         private void OnSavingProject()
         {
@@ -30,5 +35,17 @@ namespace TemplateBuilder.ViewModel
         {
             Messenger.Default.Send(new OpenProjectMessage());
         }
+
+        #endregion
+
+        #region ctor
+        
+        public BuilderViewModel()
+        {
+            this.Project = ServiceLocator.Current.GetInstance<IProjectViewModel>();
+            this.Toolbox = ServiceLocator.Current.GetInstance<IToolboxViewModel>();
+        }
+
+        #endregion
     }
 }

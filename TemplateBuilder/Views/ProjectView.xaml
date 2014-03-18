@@ -4,7 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel x:Name="ProjectTemplate" Drop="ListBox_Drop" Height="Auto" Width="Auto" Background="Silver" AllowDrop="True">
-    </StackPanel>
+             xmlns:viewModel="clr-namespace:TemplateBuilder.ViewModel"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+             xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
+             d:DataContext="{d:DesignInstance viewModel:ProjectViewModel}">
+    
+    <ItemsControl Height="Auto" Width="Auto" Background="Silver" AllowDrop="True"
+                  ItemsSource="{Binding Path=Controls}" x:Name="ProjectTemplate">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Drop" >
+                <cmd:EventToCommand Command="{Binding PanelDrop}" PassEventArgsToCommand="True"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </ItemsControl>
 </UserControl>
