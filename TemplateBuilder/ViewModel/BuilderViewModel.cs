@@ -39,7 +39,7 @@ namespace TemplateBuilder.ViewModel
             {
                 using (var fs = new FileStream(saveProjectMessage.FilePath, FileMode.CreateNew, FileAccess.ReadWrite))
                 {
-                    XamlWriter.Save(saveProjectMessage.ProjectView.ProjectTemplate, fs);
+                    //XamlWriter.Save(saveProjectMessage.ProjectView.ProjectTemplate, fs);
                 }
 
                 //saveProjectMessage.ProjectView.ProjectTemplate.Children.Clear();

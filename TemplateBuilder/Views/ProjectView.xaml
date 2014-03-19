@@ -8,14 +8,11 @@
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
              xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WPF45"
              d:DataContext="{d:DesignInstance viewModel:ProjectViewModel}">
-
-    <ListBox Height="Auto" Width="Auto" Background="Silver" AllowDrop="True"
-             ItemsSource="{Binding Path=Controls}" x:Name="ProjectTemplate"
-             SelectedItem="{Binding Path=ItemSelected}">
+    <Canvas Background="Silver" AllowDrop="True" Height="Auto" Width="Auto">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Drop" >
                 <cmd:EventToCommand Command="{Binding Path=PanelDrop}" PassEventArgsToCommand="True"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
-    </ListBox>
+    </Canvas>
 </UserControl>

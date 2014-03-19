@@ -34,7 +34,6 @@ namespace TemplateBuilder.ViewModel
             }
         }
 
-
         Control _ItemSelected;
         /// <summary>
         /// property used to get the selected item
@@ -55,6 +54,7 @@ namespace TemplateBuilder.ViewModel
             }
         }
 
+        double _XPos, _YPos;
 
         #endregion
 
@@ -87,12 +87,56 @@ namespace TemplateBuilder.ViewModel
         /// </summary>
         void Execute_PanelDrop(DragEventArgs e)
         {
+            var container = (Panel)e.Source;
             var data = (CustomControl)e.Data.GetData(typeof(CustomControl));
 
             if (data != null && data.TheControl != null)
             {
                 data.TheControl.HorizontalAlignment = HorizontalAlignment.Left;
-                Controls.Add(data.TheControl.XamlClone());
+
+                var ctrl = data.TheControl.XamlClone();
+                ctrl.PreviewMouseLeftButtonDown += MouseLeftButtonDown;
+                ctrl.PreviewMouseMove += MouseMove;
+                ctrl.Cursor = Cursors.Hand;
+
+                Controls.Add(ctrl);
+                container.Children.Add(ctrl);
+            }
+        }
+
+        /// <summary>
+        /// Event to get the first position and control selected
+        /// </summary>
+        void MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var ctrl = sender as Control;
+            var ctrlPos = e.GetPosition(ctrl);
+
+            /// TODO: Get these values from View
+            var dockWidth = 120;
+            var dockheader = 20;
+
+            _XPos = ctrlPos.X + dockWidth;
+            _YPos = ctrlPos.Y + dockheader;
+
+            ItemSelected = (Control)sender;
+        }
+
+        /// <summary>
+        /// Event to drag the control selected
+        /// </summary>
+        void MouseMove(object sender, MouseEventArgs e)
+        {
+            var ctrl = sender as Control;
+
+            if (e.LeftButton.Equals(MouseButtonState.Pressed)
+                && ItemSelected.Equals(ctrl))
+            {
+                var ctrlParent = ctrl.Parent as Control;
+                var ctrlParentPos = e.GetPosition(ctrlParent);
+
+                ctrl.SetValue(Canvas.LeftProperty, ctrlParentPos.X - _XPos);
+                ctrl.SetValue(Canvas.TopProperty, ctrlParentPos.Y - _YPos);
             }
         }
 
