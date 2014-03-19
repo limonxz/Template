@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Controls;
 using System.Windows.Markup;
 
 public static class ExtensionMethods
@@ -6,7 +7,7 @@ public static class ExtensionMethods
     /// <summary>
     /// Extention to clone the XAML controls
     /// </summary>
-    public static T XamlClone<T>(this T original) where T : class
+    public static T XamlClone<T>(this T original) where T : Control
     {
         if (original == null)
         {

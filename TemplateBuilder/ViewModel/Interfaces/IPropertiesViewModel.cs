@@ -1,9 +1,10 @@
-﻿using TemplateBuilder.Model;
+﻿using System.Windows.Controls;
+using TemplateBuilder.Model;
 
 namespace TemplateBuilder.ViewModel.Interfaces
 {
-    interface IPropertiesViewModel
+    public interface IPropertiesViewModel
     {
-        CustomControl SelectedControl { get; set; }
+        Control SelectedControl { get; set; }
     }
 }

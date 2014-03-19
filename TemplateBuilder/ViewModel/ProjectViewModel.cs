@@ -4,7 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using TemplateBuilder.Model;
+using TemplateBuilder.Model.Messages;
 using TemplateBuilder.ViewModel.Interfaces;
 
 namespace TemplateBuilder.ViewModel
@@ -31,6 +33,28 @@ namespace TemplateBuilder.ViewModel
                 RaisePropertyChanged(() => this.Name);
             }
         }
+
+
+        Control _ItemSelected;
+        /// <summary>
+        /// property used to get the selected item
+        /// </summary>
+        public Control ItemSelected
+        {
+            get { return _ItemSelected; }
+            set
+            {
+                _ItemSelected = value;
+                RaisePropertyChanged(() => this.ItemSelected);
+
+                if (value != null)
+                {
+                    var controlMessage = new ControlMessage() { TheControl = value };
+                    Messenger.Default.Send(controlMessage);
+                }
+            }
+        }
+
 
         #endregion
 
@@ -75,11 +99,11 @@ namespace TemplateBuilder.ViewModel
         #endregion
 
         #region ctor
-        
+
         public ProjectViewModel()
         {
             Controls = new ObservableCollection<Control>();
-        } 
+        }
 
         #endregion
     }

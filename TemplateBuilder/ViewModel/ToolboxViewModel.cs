@@ -14,17 +14,6 @@ namespace TemplateBuilder.ViewModel
     {
         #region Properties
 
-        private CustomControl _selectedControl;
-        public CustomControl SelectedControl
-        {
-            get { return _selectedControl; }
-            set
-            {
-                _selectedControl = value;
-                RaisePropertyChanged(() => this.SelectedControl);
-            }
-        }
-
         ObservableCollection<CustomControl> _controls;
         public ObservableCollection<CustomControl> Controls
         {

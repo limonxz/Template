@@ -8,7 +8,10 @@
         xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:views="clr-namespace:TemplateBuilder.Views"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance viewModel:BuilderViewModel}">
+        d:DataContext="{d:DesignInstance viewModel:BuilderViewModel}"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="800"
+        MinWidth="1000">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
@@ -23,21 +26,21 @@
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical" x:Name="lapgToolBox">
                         <avalonDock:LayoutAnchorablePane>
                             <avalonDock:LayoutAnchorable Title="Toolbox">
-                                <views:ToolboxView DataContext="{Binding Toolbox}" />
+                                <views:ToolboxView DataContext="{Binding Path=Toolbox}" />
                             </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
                     
                     <avalonDock:LayoutAnchorablePane DockWidth="5*">
                         <avalonDock:LayoutAnchorable CanAutoHide="False" CanFloat="False" CanHide="False" CanClose="False">
-                            <views:ProjectView x:Name="pvContainer" DataContext="{Binding Project}"></views:ProjectView>
+                            <views:ProjectView x:Name="pvContainer" DataContext="{Binding Path=Project}" />
                         </avalonDock:LayoutAnchorable>
                     </avalonDock:LayoutAnchorablePane>
                     
-                    <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical">
+                    <avalonDock:LayoutAnchorablePaneGroup DockWidth="2*" Orientation="Vertical">
                         <avalonDock:LayoutAnchorablePane>
                             <avalonDock:LayoutAnchorable Title="Properties">
-                                <views:PropertiesView/>
+                                <views:PropertiesView DataContext="{Binding Path=Properties}"/>
                             </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>

@@ -8,7 +8,6 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using TemplateBuilder.Model.Messages;
 using TemplateBuilder.ViewModel.Interfaces;
-using TemplateBuilder.Views;
 
 namespace TemplateBuilder.ViewModel
 {
@@ -18,6 +17,7 @@ namespace TemplateBuilder.ViewModel
 
         public IProjectViewModel Project { get; set; }
         public IToolboxViewModel Toolbox { get; set; }
+        public IPropertiesViewModel Properties { get; set; }
 
         #endregion
 
@@ -70,6 +70,7 @@ namespace TemplateBuilder.ViewModel
         {
             this.Project = ServiceLocator.Current.GetInstance<IProjectViewModel>();
             this.Toolbox = ServiceLocator.Current.GetInstance<IToolboxViewModel>();
+            Properties = ServiceLocator.Current.GetInstance<IPropertiesViewModel>();
         }
 
         #endregion
