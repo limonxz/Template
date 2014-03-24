@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Markup;
+﻿using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -15,61 +12,66 @@ namespace TemplateBuilder.ViewModel
     {
         #region Properties
 
+        /// <summary>
+        /// The View Model of the template
+        /// </summary>
         public IProjectViewModel Project { get; set; }
+
+        /// <summary>
+        /// The View model of the Tool Box
+        /// </summary>
         public IToolboxViewModel Toolbox { get; set; }
+
+        /// <summary>
+        /// The View model of the Propeerties
+        /// </summary>
         public IPropertiesViewModel Properties { get; set; }
 
         #endregion
 
         #region Commands
-        
+
+        /// <summary>
+        /// The command to save the template
+        /// </summary>
         public ICommand SaveProject { get { return new RelayCommand(OnSavingProject); } }
+
+        /// <summary>
+        /// The command to open the template
+        /// </summary>
         public ICommand OpenProject { get { return new RelayCommand(OnOpeningProject); } }
 
         #endregion
 
         #region Actions
 
-        private void OnSavingProject()
+        /// <summary>
+        /// Action to call method of the other VM for save the template
+        /// </summary>
+        void OnSavingProject()
         {
             var saveProjectMessage = new SaveProjectMessage();
             Messenger.Default.Send(saveProjectMessage);
 
-            if (!string.IsNullOrEmpty(saveProjectMessage.FilePath))
-            {
-                using (var fs = new FileStream(saveProjectMessage.FilePath, FileMode.CreateNew, FileAccess.ReadWrite))
-                {
-                    //XamlWriter.Save(saveProjectMessage.ProjectView.ProjectTemplate, fs);
-                }
-
-                //saveProjectMessage.ProjectView.ProjectTemplate.Children.Clear();
-            }
         }
 
-        private void OnOpeningProject()
+        /// <summary>
+        /// Action to call method of the other VM, for open the template
+        /// </summary>
+        void OnOpeningProject()
         {
             var openProjectMessage = new OpenProjectMessage();
             Messenger.Default.Send(openProjectMessage);
-
-            if (!string.IsNullOrEmpty(openProjectMessage.FilePath))
-            {
-                using (var mysr = new StreamReader(openProjectMessage.FilePath))
-                {
-                    var rootObject = XamlReader.Load(mysr.BaseStream) as StackPanel;
-
-                    if (rootObject != null) openProjectMessage.ProjectView.Content = rootObject;
-                }
-            }
         }
 
         #endregion
 
         #region ctor
-        
+
         public BuilderViewModel()
         {
-            this.Project = ServiceLocator.Current.GetInstance<IProjectViewModel>();
-            this.Toolbox = ServiceLocator.Current.GetInstance<IToolboxViewModel>();
+            Project = ServiceLocator.Current.GetInstance<IProjectViewModel>();
+            Toolbox = ServiceLocator.Current.GetInstance<IToolboxViewModel>();
             Properties = ServiceLocator.Current.GetInstance<IPropertiesViewModel>();
         }
 

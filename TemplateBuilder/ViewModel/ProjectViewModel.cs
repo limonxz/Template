@@ -1,13 +1,16 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Win32;
 using TemplateBuilder.Model;
 using TemplateBuilder.Model.Messages;
 using TemplateBuilder.ViewModel.Interfaces;
+using TemplateBuilder.Views;
 
 namespace TemplateBuilder.ViewModel
 {
@@ -15,12 +18,17 @@ namespace TemplateBuilder.ViewModel
     {
         #region Properties
 
+        ProjectView _ProjectView;
+
         /// <summary>
-        /// To Store the controls
+        /// Filter for the file
         /// </summary>
-        public ObservableCollection<Control> Controls { get; set; }
+        static string FILEFILTER = "XML Files (*.xml)|*.xml";
 
         private string _name;
+        /// <summary>
+        /// The project name
+        /// </summary>
         public string Name
         {
             get
@@ -54,7 +62,10 @@ namespace TemplateBuilder.ViewModel
             }
         }
 
-        double _XPos, _YPos;
+        /// <summary>
+        /// Panlel Main Container
+        /// </summary>
+        Panel _Container;
 
         #endregion
 
@@ -82,12 +93,79 @@ namespace TemplateBuilder.ViewModel
         #region Actions
 
         /// <summary>
+        /// Action to save the template
+        /// </summary>
+        void SaveProject(SaveProjectMessage msg)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = FILEFILTER;
+            saveFileDialog.ShowDialog();
+            msg.FilePath = saveFileDialog.FileName;
+            msg.ProjectViewTemplate = _ProjectView;
+
+            if (!string.IsNullOrEmpty(msg.FilePath))
+            {
+                using (var fs = new FileStream(msg.FilePath, FileMode.CreateNew, FileAccess.ReadWrite))
+                {
+                    XamlWriter.Save(msg.ProjectViewTemplate.ProjectTemplate, fs);
+                }
+            }
+        }
+
+        /// <summary>
+        /// For open the project
+        /// </summary>
+        void OpenProject(OpenProjectMessage msg)
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = FILEFILTER;
+            openFileDialog.ShowDialog();
+            msg.FilePath = openFileDialog.FileName;
+            msg.ProjectViewTemplate = _ProjectView;
+
+            if (!string.IsNullOrEmpty(msg.FilePath))
+            {
+                using (var mysr = new StreamReader(msg.FilePath))
+                {
+                    msg.CurrrentContainer = XamlReader.Load(mysr.BaseStream) as Panel;
+                }
+
+                if (msg.CurrrentContainer != null)
+                {
+                    _Container = msg.ProjectViewTemplate.ProjectTemplate;
+
+                    foreach (UIElement item in msg.CurrrentContainer.Children)
+                    {
+                        var ctrl = item.XamlClone() as Control;
+                        SetActionsControl(ref ctrl);
+                        _Container.Children.Add(ctrl);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// For get the UIElement
+        /// </summary>
+        void GetProjectContainer(ProjectContainerMessage msg)
+        {
+            if (msg != null && msg.ProjectViewContainer != null)
+            {
+                _ProjectView = msg.ProjectViewContainer;
+            }
+        }
+
+        /// <summary>
         /// Command Action: PanelDrop
         /// Command action, use for get the item drop
         /// </summary>
         void Execute_PanelDrop(DragEventArgs e)
         {
-            var container = (Panel)e.Source;
+            if (_Container == null)
+            {
+                _Container = (Panel)e.Source;
+            }
+            
             var data = (CustomControl)e.Data.GetData(typeof(CustomControl));
 
             if (data != null && data.TheControl != null)
@@ -95,12 +173,13 @@ namespace TemplateBuilder.ViewModel
                 data.TheControl.HorizontalAlignment = HorizontalAlignment.Left;
 
                 var ctrl = data.TheControl.XamlClone();
-                ctrl.PreviewMouseLeftButtonDown += MouseLeftButtonDown;
-                ctrl.PreviewMouseMove += MouseMove;
-                ctrl.Cursor = Cursors.Hand;
+                SetActionsControl(ref ctrl);
 
-                Controls.Add(ctrl);
-                container.Children.Add(ctrl);
+                var ctrlPos = e.GetPosition(_Container);
+                ctrl.SetValue(Canvas.LeftProperty, ctrlPos.X);
+                ctrl.SetValue(Canvas.TopProperty, ctrlPos.Y);
+
+                _Container.Children.Add(ctrl);
             }
         }
 
@@ -112,14 +191,9 @@ namespace TemplateBuilder.ViewModel
             var ctrl = sender as Control;
             var ctrlPos = e.GetPosition(ctrl);
 
-            /// TODO: Get these values from View
-            var dockWidth = 120;
-            var dockheader = 20;
-
-            _XPos = ctrlPos.X + dockWidth;
-            _YPos = ctrlPos.Y + dockheader;
-
-            ItemSelected = (Control)sender;
+            ItemSelected = ctrl;
+            ItemSelected.Focusable = true;
+            ItemSelected.Focus();
         }
 
         /// <summary>
@@ -132,12 +206,22 @@ namespace TemplateBuilder.ViewModel
             if (e.LeftButton.Equals(MouseButtonState.Pressed)
                 && ItemSelected.Equals(ctrl))
             {
-                var ctrlParent = ctrl.Parent as Control;
-                var ctrlParentPos = e.GetPosition(ctrlParent);
 
-                ctrl.SetValue(Canvas.LeftProperty, ctrlParentPos.X - _XPos);
-                ctrl.SetValue(Canvas.TopProperty, ctrlParentPos.Y - _YPos);
+                var ctrlPos = e.GetPosition(_Container);
+                ctrl.SetValue(Canvas.LeftProperty, ctrlPos.X);
+                ctrl.SetValue(Canvas.TopProperty, ctrlPos.Y);
             }
+        }
+
+        /// <summary>
+        /// For set the actions when moves the control
+        /// </summary>
+        void SetActionsControl(ref Control ctrl)
+        {
+            ctrl.PreviewMouseLeftButtonDown += MouseLeftButtonDown;
+            ctrl.PreviewMouseMove += MouseMove;
+            ctrl.Cursor = Cursors.Hand;
+            ctrl.Focusable = true;
         }
 
         #endregion
@@ -146,7 +230,9 @@ namespace TemplateBuilder.ViewModel
 
         public ProjectViewModel()
         {
-            Controls = new ObservableCollection<Control>();
+            Messenger.Default.Register<OpenProjectMessage>(this, OpenProject);
+            Messenger.Default.Register<SaveProjectMessage>(this, SaveProject);
+            Messenger.Default.Register<ProjectContainerMessage>(this, GetProjectContainer);
         }
 
         #endregion

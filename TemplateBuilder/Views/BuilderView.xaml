@@ -15,36 +15,40 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open" Command="{Binding OpenProject}"></MenuItem>
-                <MenuItem Header="_Save" Command="{Binding SaveProject}"></MenuItem>
+                <MenuItem Header="_Open Project CTRL + O" Command="{Binding Path=OpenProject}"></MenuItem>
+                <MenuItem Header="Open _Recent" Command="{Binding Path=OpenRecentProject}" IsEnabled="False"></MenuItem>
+                <MenuItem Header="_Save CTRL + S" Command="{Binding Path=SaveProject}"></MenuItem>
+                <MenuItem Header="Save _As CTRL + A" Command="{Binding Path=SaveAsProject}" IsEnabled="False"></MenuItem>
+                <MenuItem Header="_Exit CTRL + Q" Command="{Binding Path=ExitProject}"></MenuItem>
             </MenuItem>
         </Menu>
+
         <avalonDock:DockingManager x:Name="dockingManager">
             <avalonDock:LayoutRoot>
                 <avalonDock:LayoutPanel Orientation="Horizontal">
-                    
-                    <avalonDock:LayoutAnchorablePaneGroup DockWidth="150" Orientation="Vertical" x:Name="lapgToolBox">
+
+                    <avalonDock:LayoutAnchorablePaneGroup Orientation="Vertical">
                         <avalonDock:LayoutAnchorablePane>
-                            <avalonDock:LayoutAnchorable Title="Toolbox">
+                            <avalonDock:LayoutAnchorable CanClose="False" Title="Toolbox"  x:Name="laToolBox" >
                                 <views:ToolboxView DataContext="{Binding Path=Toolbox}" />
                             </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
-                    
+
                     <avalonDock:LayoutAnchorablePane DockWidth="5*">
-                        <avalonDock:LayoutAnchorable CanAutoHide="False" CanFloat="False" CanHide="False" CanClose="False">
+                        <avalonDock:LayoutAnchorable >
                             <views:ProjectView x:Name="pvContainer" DataContext="{Binding Path=Project}" />
                         </avalonDock:LayoutAnchorable>
                     </avalonDock:LayoutAnchorablePane>
-                    
+
                     <avalonDock:LayoutAnchorablePaneGroup DockWidth="2*" Orientation="Vertical">
                         <avalonDock:LayoutAnchorablePane>
-                            <avalonDock:LayoutAnchorable Title="Properties">
+                            <avalonDock:LayoutAnchorable CanClose="False" Title="Properties">
                                 <views:PropertiesView DataContext="{Binding Path=Properties}"/>
                             </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
-                    
+
                 </avalonDock:LayoutPanel>
             </avalonDock:LayoutRoot>
         </avalonDock:DockingManager>

@@ -1,13 +1,15 @@
-﻿using System.IO;
-using System.Windows.Controls;
+﻿using System;
+using System.IO;
+using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Threading;
 
 public static class ExtensionMethods
 {
     /// <summary>
     /// Extention to clone the XAML controls
     /// </summary>
-    public static T XamlClone<T>(this T original) where T : Control
+    public static T XamlClone<T>(this T original) where T : UIElement
     {
         if (original == null)
         {

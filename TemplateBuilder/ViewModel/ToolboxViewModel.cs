@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using TemplateBuilder.Model;
 using TemplateBuilder.ViewModel.Interfaces;
+using TemplateBuilder.Views;
 
 namespace TemplateBuilder.ViewModel
 {
@@ -15,6 +16,9 @@ namespace TemplateBuilder.ViewModel
         #region Properties
 
         ObservableCollection<CustomControl> _controls;
+        /// <summary>
+        /// The controls of the tool box
+        /// </summary>
         public ObservableCollection<CustomControl> Controls
         {
             get { return _controls; }
@@ -74,8 +78,7 @@ namespace TemplateBuilder.ViewModel
         public ToolboxViewModel()
         {
             var controls = FillListControls();
-
-            this.Controls = new ObservableCollection<CustomControl>(controls);
+            Controls = new ObservableCollection<CustomControl>(controls);
         }
 
         #endregion
@@ -90,11 +93,13 @@ namespace TemplateBuilder.ViewModel
         {
             var controls = new Collection<CustomControl>
             {
+                //TODO: new TextBlock
                 new CustomControl{Name = "TextBox", TheControl = new TextBox(){ Text = "It's TextBox", Width = 80}},
                 new CustomControl{Name = "RadioButton", TheControl = new RadioButton() { Content = "I's RadioButton" }},
                 new CustomControl{Name = "CheckBox", TheControl = new CheckBox() { Content = "I's CheckBox" }},
                 new CustomControl{Name = "DatePicker", TheControl = new DatePicker() },
-                new CustomControl{Name = "Label", TheControl = new Label() { Content="It's Label" } }
+                new CustomControl{Name = "Label", TheControl = new Label() { Content="It's Label" } },
+                new CustomControl{Name = "User Control", TheControl = new ucExample() }
             };
 
             return controls;
@@ -109,9 +114,11 @@ namespace TemplateBuilder.ViewModel
             if (element != null)
             {
                 var data = DependencyProperty.UnsetValue;
+
                 while (data == DependencyProperty.UnsetValue)
                 {
                     data = source.ItemContainerGenerator.ItemFromContainer(element);
+
                     if (data == DependencyProperty.UnsetValue)
                     {
                         element = VisualTreeHelper.GetParent(element) as UIElement;
@@ -121,6 +128,7 @@ namespace TemplateBuilder.ViewModel
                         return null;
                     }
                 }
+
                 if (data != DependencyProperty.UnsetValue)
                 {
                     return (CustomControl)data;

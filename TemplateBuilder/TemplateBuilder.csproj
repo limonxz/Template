@@ -101,6 +101,7 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\Registries\ViewModelsRegistry.cs" />
     <Compile Include="Model\Messages\ControlMessage.cs" />
+    <Compile Include="Model\Messages\ProjectContainerMessage.cs" />
     <Compile Include="Model\Messages\OpenProjectMessage.cs" />
     <Compile Include="Model\Messages\SaveProjectMessage.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
@@ -128,6 +129,9 @@
     </Compile>
     <Compile Include="Views\ToolboxView.xaml.cs">
       <DependentUpon>ToolboxView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ucExample.xaml.cs">
+      <DependentUpon>ucExample.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +176,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ToolboxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ucExample.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

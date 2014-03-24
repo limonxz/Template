@@ -8,7 +8,8 @@ namespace TemplateBuilder.ViewModel
 {
     public class PropertiesViewModel : ViewModelBase, IPropertiesViewModel
     {
-
+        #region properties
+        
         Control _SelectedControl;
         /// <summary>
         /// Propery used to gets the selected control
@@ -21,13 +22,22 @@ namespace TemplateBuilder.ViewModel
                 _SelectedControl = value;
                 RaisePropertyChanged(() => this.SelectedControl);
             }
-        }
+        } 
 
+        #endregion
+
+        #region ctor
+        
         public PropertiesViewModel()
         {
             Messenger.Default.Register<ControlMessage>(this, SetSelectedControl);
-        }
+        } 
 
+        #endregion
+
+        /// <summary>
+        /// Method to set the selected control
+        /// </summary>
         void SetSelectedControl(ControlMessage msg) 
         {
             SelectedControl = msg.TheControl;
