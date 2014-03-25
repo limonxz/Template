@@ -9,7 +9,21 @@ namespace TemplateBuilder.ViewModel
     public class PropertiesViewModel : ViewModelBase, IPropertiesViewModel
     {
         #region properties
-        
+
+        bool _AllProperties;
+        /// <summary>
+        /// Propery used to the control of properties
+        /// </summary>
+        public bool AllProperties
+        {
+            get { return _AllProperties; }
+            set
+            {
+                _AllProperties = value;
+                RaisePropertyChanged(() => this.AllProperties);
+            }
+        }
+
         Control _SelectedControl;
         /// <summary>
         /// Propery used to gets the selected control
@@ -30,6 +44,7 @@ namespace TemplateBuilder.ViewModel
         
         public PropertiesViewModel()
         {
+            AllProperties = false;
             Messenger.Default.Register<ControlMessage>(this, SetSelectedControl);
         } 
 

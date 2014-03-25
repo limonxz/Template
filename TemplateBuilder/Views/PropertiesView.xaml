@@ -8,11 +8,9 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              d:DataContext="{d:DesignInstance viewModel:PropertiesViewModel}">
     <Grid>
-        <xctk:PropertyGrid AutoGenerateProperties="True" SelectedObject="{Binding Path=SelectedControl}">
+        <xctk:PropertyGrid AutoGenerateProperties="{Binding Path=AllProperties}" SelectedObject="{Binding Path=SelectedControl}">
             <xctk:PropertyGrid.PropertyDefinitions>
-                <xctk:PropertyDefinition Name="FirstName" />
-                <xctk:PropertyDefinition Name="FavoriteColor" />
-                <xctk:PropertyDefinition Name="PetNames" />
+                <xctk:PropertyDefinition Name="Content" />
             </xctk:PropertyGrid.PropertyDefinitions>
         </xctk:PropertyGrid>
     </Grid>

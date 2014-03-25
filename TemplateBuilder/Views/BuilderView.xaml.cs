@@ -1,9 +1,5 @@
-﻿using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
+﻿using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Win32;
 using TemplateBuilder.Model.Messages;
 
 namespace TemplateBuilder.Views
@@ -19,24 +15,11 @@ namespace TemplateBuilder.Views
         public BuilderView()
         {
             InitializeComponent();
-            Messenger.Default.Register<SaveProjectMessage>(this, SaveProject);
-            Messenger.Default.Register<OpenProjectMessage>(this, OpenProject);
-        }
-
-        private void SaveProject(SaveProjectMessage msg)
-        {
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.ShowDialog();
-            msg.FilePath = saveFileDialog.FileName;
-            msg.ProjectView = pvContainer;
-        }
-
-        private void OpenProject(OpenProjectMessage msg)
-        {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.ShowDialog();
-            msg.FilePath = openFileDialog.FileName;
-            msg.ProjectView = pvContainer;
+            
+            /// For set the Project view control, into the VM's
+            var projectContainerMessage = new ProjectContainerMessage();
+            projectContainerMessage.ProjectViewContainer = pvContainer;
+            Messenger.Default.Send(projectContainerMessage);
         }
     }
 }

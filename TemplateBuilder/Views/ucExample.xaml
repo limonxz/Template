@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="TemplateBuilder.Views.ucExample"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             >
+    <Border BorderThickness="5" BorderBrush="Black" CornerRadius="10" Background="Gray" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label Content="It's a User Control" Grid.Row="0"/>
+            <TextBox Text="TextBox" Grid.Row="1" />
+            <CheckBox Content="CheckBox" Grid.Row="2" />
+            <Button Content="Button" Grid.Row="3"/>
+
+        </Grid>
+    </Border>
+</UserControl>
