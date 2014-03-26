@@ -15,6 +15,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
+                <MenuItem Header="_New CTRL + N" Command="{Binding Path=NewProject}"></MenuItem>
                 <MenuItem Header="_Open Project CTRL + O" Command="{Binding Path=OpenProject}"></MenuItem>
                 <MenuItem Header="Open _Recent" Command="{Binding Path=OpenRecentProject}" IsEnabled="False"></MenuItem>
                 <MenuItem Header="_Save CTRL + S" Command="{Binding Path=SaveProject}"></MenuItem>
