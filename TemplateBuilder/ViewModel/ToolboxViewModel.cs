@@ -94,7 +94,7 @@ namespace TemplateBuilder.ViewModel
             var controls = new Collection<CustomControl>
             {
                 //TODO: new TextBlock
-                new CustomControl{Name = "TextBox", TheControl = new TextBox(){ Text = "It's TextBox", Width = 80, Height = 20}},
+                new CustomControl{Name = "TextBox", TheControl = new TextBox(){ Width = 80, Height = 20}},
                 new CustomControl{Name = "RadioButton", TheControl = new RadioButton() { Content = "I's RadioButton" }},
                 new CustomControl{Name = "CheckBox", TheControl = new CheckBox() { Content = "I's CheckBox" }},
                 new CustomControl{Name = "DatePicker", TheControl = new DatePicker() },

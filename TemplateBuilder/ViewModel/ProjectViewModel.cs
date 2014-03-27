@@ -62,11 +62,8 @@ namespace TemplateBuilder.ViewModel
                 _ItemSelected = value;
                 RaisePropertyChanged(() => this.ItemSelected);
 
-                if (value != null)
-                {
-                    var controlMessage = new ControlMessage() { TheControl = value };
-                    Messenger.Default.Send(controlMessage);
-                }
+                var controlMessage = new ControlMessage() { TheControl = value };
+                Messenger.Default.Send(controlMessage);
             }
         }
 
@@ -114,6 +111,7 @@ namespace TemplateBuilder.ViewModel
                     SaveProject(saveProjectMessage);
                 }
 
+                ItemSelected = null;
                 _Container.Children.Clear();
             }
         }
@@ -283,10 +281,7 @@ namespace TemplateBuilder.ViewModel
                         _Container.Children.Remove(ctrl);
                     }
 
-                    if (ItemSelected == ctrl)
-                    {
-                        ItemSelected = null;
-                    }
+                    ItemSelected = null;
                 }
             }
         }

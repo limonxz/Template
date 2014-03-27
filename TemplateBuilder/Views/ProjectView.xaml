@@ -10,14 +10,16 @@
              d:DataContext="{d:DesignInstance viewModel:ProjectViewModel}">
 
     <UserControl.Resources>
-        <!--<ContextMenu x:Key="cmControls">
-            <MenuItem Header="Eliminate" Command="{Binding Path=EliminateSelectedControl}" 
-                      CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
-
-        </ContextMenu>-->
+        <Style x:Key="cmControls" TargetType="{x:Type Control}">
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="true">
+                    <Setter Property="BorderBrush" Value="Silver"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <Style TargetType="{x:Type TextBox}">
-            <!--<Setter Property="ContextMenu" Value="{DynamicResource cmControls}" />-->
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="true">
                     <Setter Property="BorderBrush" Value="Silver"/>
@@ -26,7 +28,6 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="{x:Type RadioButton}">
-            <!--<Setter Property="ContextMenu" Value="{DynamicResource cmControls}" />-->
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="true">
                     <Setter Property="BorderBrush" Value="Silver"/>
@@ -35,7 +36,6 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="{x:Type CheckBox}">
-            <!--<Setter Property="ContextMenu" Value="{DynamicResource cmControls}" />-->
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="true">
                     <Setter Property="BorderBrush" Value="Silver"/>
@@ -44,7 +44,6 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="{x:Type Label}">
-            <!--<Setter Property="ContextMenu" Value="{DynamicResource cmControls}" />-->
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="true">
                     <Setter Property="BorderBrush" Value="Silver"/>
@@ -53,7 +52,6 @@
             </Style.Triggers>
         </Style>
         <Style TargetType="{x:Type DatePicker}">
-            <!--<Setter Property="ContextMenu" Value="{DynamicResource cmControls}" />-->
             <Style.Triggers>
                 <Trigger Property="IsKeyboardFocusWithin" Value="true">
                     <Setter Property="Background" Value="Silver"/>
@@ -62,6 +60,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+
 
     <Canvas Background="White" AllowDrop="True" Height="Auto" Width="Auto" x:Name="ProjectTemplate">
         <i:Interaction.Triggers>
