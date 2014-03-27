@@ -76,6 +76,9 @@ namespace TemplateBuilder.ViewModel
         /// Panlel Main Container
         /// </summary>
         Panel _Container;
+        
+        public IEditableCanvasViewModel EditableCanvas { get; set; }
+        public EditableCanvasView EditableCanvasView { get; set; }
 
         #endregion
 
@@ -175,6 +178,38 @@ namespace TemplateBuilder.ViewModel
         }
 
         /// <summary>
+        /// Update control text after editing
+        /// </summary>
+        void UpdateControlContent(FinishEditingMessage finishEditingMessage)
+        {
+            if (ItemSelected is ToggleButton)
+                (ItemSelected as ToggleButton).Content = finishEditingMessage.Text;
+
+            if (ItemSelected is Label)
+                (ItemSelected as Label).Content = finishEditingMessage.Text;
+
+            _Container.Children.Remove(EditableCanvasView);
+            EditableCanvasView = null;
+        }
+
+        /// <summary>
+        /// set visible editable canvas over control selected
+        /// </summary>
+        void ShowEditableCanvas(ShowEditableCanvasMessage msg)
+        {
+            EditableCanvas = new EditableCanvasViewModel
+            {
+                Source = msg.Control,
+                Position = msg.Position,
+                IsVisible = Visibility.Visible
+            };
+
+            EditableCanvasView = new EditableCanvasView(EditableCanvas);
+            _Container.Children.Add(EditableCanvasView);
+        }
+
+
+        /// <summary>
         /// Method to add action to the child controls 
         /// </summary>
         void AddControlsContainer(Panel panel)
@@ -235,8 +270,8 @@ namespace TemplateBuilder.ViewModel
             var ctrl = (Control)sender;
             var ctrlPosition = e.GetPosition(ctrl);
 
-            _XPos = ctrlPos.X;
-            _YPos = ctrlPos.Y;
+            _XPos = ctrlPosition.X;
+            _YPos = ctrlPosition.Y;
 
             ItemSelected = ctrl;
             ItemSelected.Focusable = true;
@@ -253,10 +288,9 @@ namespace TemplateBuilder.ViewModel
             if (e.LeftButton.Equals(MouseButtonState.Pressed)
                 && ItemSelected.Equals(ctrl))
             {
-
                 var ctrlPos = e.GetPosition(_Container);
-                ctrl.SetValue(Canvas.LeftProperty, ctrlPos.X + _pointPosition.X);
-                ctrl.SetValue(Canvas.TopProperty, ctrlPos.Y + _pointPosition.Y);
+                ctrl.SetValue(Canvas.LeftProperty, ctrlPos.X - _XPos);
+                ctrl.SetValue(Canvas.TopProperty, ctrlPos.Y - _YPos);
             }
         }
 
@@ -301,12 +335,18 @@ namespace TemplateBuilder.ViewModel
             }
         }
 
+        /// <summary>
+        /// Assign the selected control when doubleclick
+        /// </summary>
         private void CtrlOnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             if (sender is ToggleButton || sender is Label)
                 ItemSelected = (Control)sender;
         }
 
+        /// <summary>
+        /// Paint the canvas over the control selected on doubleclick
+        /// </summary>
         private void MouseDoubleClick(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             if (sender is ToggleButton || sender is Label)
@@ -333,34 +373,6 @@ namespace TemplateBuilder.ViewModel
             Messenger.Default.Register<ShowEditableCanvasMessage>(this, ShowEditableCanvas);
         }
 
-        private void UpdateControlContent(FinishEditingMessage finishEditingMessage)
-        {
-            if (ItemSelected is ToggleButton)
-                (ItemSelected as ToggleButton).Content = finishEditingMessage.Text;
-            
-            if(ItemSelected is Label)
-                (ItemSelected as Label).Content = finishEditingMessage.Text;
-
-            _Container.Children.Remove(EditableCanvasView);
-            EditableCanvasView = null;
-        }
-
         #endregion
-
-        private void ShowEditableCanvas(ShowEditableCanvasMessage msg)
-        {
-            EditableCanvas = new EditableCanvasViewModel
-            {
-                Source = msg.Control,
-                Position = msg.Position,
-                IsVisible = Visibility.Visible
-            };
-
-            EditableCanvasView = new EditableCanvasView(EditableCanvas);
-            _Container.Children.Add(EditableCanvasView);
-        }
-
-        public IEditableCanvasViewModel EditableCanvas { get; set; }
-        public EditableCanvasView EditableCanvasView { get; set; }
     }
 }
