@@ -6,5 +6,7 @@
         /// The Template Name
         /// </summary>
         string Name { get; set; }
+
+        IEditableCanvasViewModel EditableCanvas { get; set; }
     }
 }

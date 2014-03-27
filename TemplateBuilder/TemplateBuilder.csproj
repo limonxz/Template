@@ -101,12 +101,15 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\Registries\ViewModelsRegistry.cs" />
     <Compile Include="Model\Messages\ControlMessage.cs" />
+    <Compile Include="Model\Messages\FinishEditingMessage.cs" />
     <Compile Include="Model\Messages\ProjectContainerMessage.cs" />
     <Compile Include="Model\Messages\OpenProjectMessage.cs" />
     <Compile Include="Model\Messages\SaveProjectMessage.cs" />
     <Compile Include="Utility\ExtensionMethods.cs" />
     <Compile Include="ViewModel\BuilderViewModel.cs" />
     <Compile Include="Model\CustomControl.cs" />
+    <Compile Include="ViewModel\EditableCanvasViewModel.cs" />
+    <Compile Include="ViewModel\IEditableCanvasViewModel.cs" />
     <Compile Include="ViewModel\Interfaces\IBuilderViewModel.cs" />
     <Compile Include="ViewModel\Interfaces\IProjectViewModel.cs" />
     <Compile Include="App.xaml.cs">
@@ -117,9 +120,13 @@
     <Compile Include="ViewModel\Interfaces\IToolboxViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\PropertiesViewModel.cs" />
+    <Compile Include="Model\Messages\ShowEditableCanvasMessage.cs" />
     <Compile Include="ViewModel\ToolboxViewModel.cs" />
     <Compile Include="Views\BuilderView.xaml.cs">
       <DependentUpon>BuilderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditableCanvasView.xaml.cs">
+      <DependentUpon>EditableCanvasView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProjectView.xaml.cs">
       <DependentUpon>ProjectView.xaml</DependentUpon>
@@ -164,6 +171,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\BuilderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditableCanvasView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

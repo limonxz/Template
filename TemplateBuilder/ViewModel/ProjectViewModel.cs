@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Markup;
 using GalaSoft.MvvmLight;
@@ -11,6 +14,8 @@ using TemplateBuilder.Model;
 using TemplateBuilder.Model.Messages;
 using TemplateBuilder.ViewModel.Interfaces;
 using TemplateBuilder.Views;
+using Xceed.Wpf.AvalonDock.Controls;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace TemplateBuilder.ViewModel
 {
@@ -103,6 +108,8 @@ namespace TemplateBuilder.ViewModel
             msg.FilePath = saveFileDialog.FileName;
             msg.ProjectViewTemplate = _ProjectView;
 
+            msg.ProjectViewTemplate.ProjectTemplate.Children.Remove(EditableCanvasView);
+
             if (!string.IsNullOrEmpty(msg.FilePath))
             {
                 using (var fs = new FileStream(msg.FilePath, FileMode.CreateNew, FileAccess.ReadWrite))
@@ -165,7 +172,7 @@ namespace TemplateBuilder.ViewModel
             {
                 _Container = (Panel)e.Source;
             }
-            
+
             var data = (CustomControl)e.Data.GetData(typeof(CustomControl));
 
             if (data != null && data.TheControl != null)
@@ -183,13 +190,20 @@ namespace TemplateBuilder.ViewModel
             }
         }
 
+        private Point _pointPosition;
+        private Point _initialMousePosition;
         /// <summary>
         /// Event to get the first position and control selected
         /// </summary>
         void MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var ctrl = sender as Control;
-            var ctrlPos = e.GetPosition(ctrl);
+            var ctrl = (Control)sender;
+            var ctrlPosition = e.GetPosition(ctrl);
+
+            _initialMousePosition = e.GetPosition(_Container);
+            _pointPosition = new Point(Canvas.GetLeft(ctrl) - _initialMousePosition.X, 
+                Canvas.GetTop(ctrl) - _initialMousePosition.Y);
+
 
             ItemSelected = ctrl;
             ItemSelected.Focusable = true;
@@ -208,8 +222,8 @@ namespace TemplateBuilder.ViewModel
             {
 
                 var ctrlPos = e.GetPosition(_Container);
-                ctrl.SetValue(Canvas.LeftProperty, ctrlPos.X);
-                ctrl.SetValue(Canvas.TopProperty, ctrlPos.Y);
+                ctrl.SetValue(Canvas.LeftProperty, ctrlPos.X + _pointPosition.X);
+                ctrl.SetValue(Canvas.TopProperty, ctrlPos.Y + _pointPosition.Y);
             }
         }
 
@@ -222,6 +236,30 @@ namespace TemplateBuilder.ViewModel
             ctrl.PreviewMouseMove += MouseMove;
             ctrl.Cursor = Cursors.Hand;
             ctrl.Focusable = true;
+
+            if (ctrl is ToggleButton || ctrl is Label)
+            {
+                ctrl.PreviewMouseDoubleClick += CtrlOnPreviewMouseDoubleClick;
+                ctrl.MouseDoubleClick += MouseDoubleClick;
+            }
+        }
+
+        private void CtrlOnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            if (sender is ToggleButton || sender is Label)
+                ItemSelected = (Control)sender;
+        }
+
+        private void MouseDoubleClick(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            if (sender is ToggleButton || sender is Label)
+            {
+                var textBlock = (mouseButtonEventArgs.OriginalSource as UIElement);
+                var point = textBlock.TransformToAncestor(_Container).Transform(new Point(0, 0));
+
+                var showCanvasMessage = new ShowEditableCanvasMessage(mouseButtonEventArgs.OriginalSource as UIElement, point);
+                Messenger.Default.Send(showCanvasMessage);
+            }
         }
 
         #endregion
@@ -233,8 +271,38 @@ namespace TemplateBuilder.ViewModel
             Messenger.Default.Register<OpenProjectMessage>(this, OpenProject);
             Messenger.Default.Register<SaveProjectMessage>(this, SaveProject);
             Messenger.Default.Register<ProjectContainerMessage>(this, GetProjectContainer);
+            Messenger.Default.Register<FinishEditingMessage>(this, UpdateControlContent);
+            Messenger.Default.Register<ShowEditableCanvasMessage>(this, ShowEditableCanvas);
+        }
+
+        private void UpdateControlContent(FinishEditingMessage finishEditingMessage)
+        {
+            if (ItemSelected is ToggleButton)
+                (ItemSelected as ToggleButton).Content = finishEditingMessage.Text;
+            
+            if(ItemSelected is Label)
+                (ItemSelected as Label).Content = finishEditingMessage.Text;
+
+            _Container.Children.Remove(EditableCanvasView);
+            EditableCanvasView = null;
         }
 
         #endregion
+
+        private void ShowEditableCanvas(ShowEditableCanvasMessage msg)
+        {
+            EditableCanvas = new EditableCanvasViewModel
+            {
+                Source = msg.Control,
+                Position = msg.Position,
+                IsVisible = Visibility.Visible
+            };
+
+            EditableCanvasView = new EditableCanvasView(EditableCanvas);
+            _Container.Children.Add(EditableCanvasView);
+        }
+
+        public IEditableCanvasViewModel EditableCanvas { get; set; }
+        public EditableCanvasView EditableCanvasView { get; set; }
     }
 }
