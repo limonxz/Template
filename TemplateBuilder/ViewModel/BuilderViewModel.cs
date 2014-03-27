@@ -31,6 +31,23 @@ namespace TemplateBuilder.ViewModel
 
         #region Commands
 
+        internal ICommand _NewProject;
+        /// <summary>
+        /// Command to create a new project
+        /// </summary>
+        public ICommand NewProject
+        {
+            get
+            {
+                if (_NewProject == null)
+                {
+                    _NewProject = new RelayCommand(Execute_NewProject);
+                }
+
+                return _NewProject;
+            }
+        }
+
         /// <summary>
         /// The command to save the template
         /// </summary>
@@ -46,13 +63,22 @@ namespace TemplateBuilder.ViewModel
         #region Actions
 
         /// <summary>
+        /// Comand Action: NewProject
+        /// Command to create a new project
+        /// </summary>
+        void Execute_NewProject()
+        {
+            var newProjectMessage = new NewProjectMessage();
+            Messenger.Default.Send(newProjectMessage);
+        }
+
+        /// <summary>
         /// Action to call method of the other VM for save the template
         /// </summary>
         void OnSavingProject()
         {
             var saveProjectMessage = new SaveProjectMessage();
             Messenger.Default.Send(saveProjectMessage);
-
         }
 
         /// <summary>

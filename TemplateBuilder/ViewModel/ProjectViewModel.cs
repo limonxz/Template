@@ -23,6 +23,14 @@ namespace TemplateBuilder.ViewModel
     {
         #region Properties
 
+        /// <summary>
+        /// to manage the position
+        /// </summary>
+        double _XPos, _YPos, _ArrowXPos, _ArrowYPos;
+
+        /// <summary>
+        /// The current view
+        /// </summary>
         ProjectView _ProjectView;
 
         /// <summary>
@@ -59,13 +67,10 @@ namespace TemplateBuilder.ViewModel
                 _ItemSelected = value;
                 RaisePropertyChanged(() => this.ItemSelected);
 
-                if (value != null)
-                {
                     var controlMessage = new ControlMessage() { TheControl = value };
                     Messenger.Default.Send(controlMessage);
                 }
             }
-        }
 
         /// <summary>
         /// Panlel Main Container
@@ -98,6 +103,25 @@ namespace TemplateBuilder.ViewModel
         #region Actions
 
         /// <summary>
+        /// Action to create a new template
+        /// </summary>
+        void NewProject(NewProjectMessage obj)
+        {
+            if (_Container != null && _Container.Children.Count > 0)
+            {
+                if (MessageBox.Show("Do you want save the current Template?", "Template",
+                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    var saveProjectMessage = new SaveProjectMessage();
+                    SaveProject(saveProjectMessage);
+                }
+
+                ItemSelected = null;
+                _Container.Children.Clear();
+            }
+        }
+
+        /// <summary>
         /// Action to save the template
         /// </summary>
         void SaveProject(SaveProjectMessage msg)
@@ -112,6 +136,11 @@ namespace TemplateBuilder.ViewModel
 
             if (!string.IsNullOrEmpty(msg.FilePath))
             {
+                if (File.Exists(msg.FilePath))
+                {
+                    File.Delete(msg.FilePath);
+                }
+
                 using (var fs = new FileStream(msg.FilePath, FileMode.CreateNew, FileAccess.ReadWrite))
                 {
                     XamlWriter.Save(msg.ProjectViewTemplate.ProjectTemplate, fs);
@@ -140,16 +169,23 @@ namespace TemplateBuilder.ViewModel
                 if (msg.CurrrentContainer != null)
                 {
                     _Container = msg.ProjectViewTemplate.ProjectTemplate;
+                    AddControlsContainer(msg.CurrrentContainer);
+                }
+            }
+        }
 
-                    foreach (UIElement item in msg.CurrrentContainer.Children)
+        /// <summary>
+        /// Method to add action to the child controls 
+        /// </summary>
+        void AddControlsContainer(Panel panel)
+        {
+            foreach (UIElement item in panel.Children)
                     {
                         var ctrl = item.XamlClone() as Control;
                         SetActionsControl(ref ctrl);
                         _Container.Children.Add(ctrl);
                     }
                 }
-            }
-        }
 
         /// <summary>
         /// For get the UIElement
@@ -172,7 +208,7 @@ namespace TemplateBuilder.ViewModel
             {
                 _Container = (Panel)e.Source;
             }
-
+            
             var data = (CustomControl)e.Data.GetData(typeof(CustomControl));
 
             if (data != null && data.TheControl != null)
@@ -185,7 +221,6 @@ namespace TemplateBuilder.ViewModel
                 var ctrlPos = e.GetPosition(_Container);
                 ctrl.SetValue(Canvas.LeftProperty, ctrlPos.X);
                 ctrl.SetValue(Canvas.TopProperty, ctrlPos.Y);
-
                 _Container.Children.Add(ctrl);
             }
         }
@@ -200,10 +235,8 @@ namespace TemplateBuilder.ViewModel
             var ctrl = (Control)sender;
             var ctrlPosition = e.GetPosition(ctrl);
 
-            _initialMousePosition = e.GetPosition(_Container);
-            _pointPosition = new Point(Canvas.GetLeft(ctrl) - _initialMousePosition.X, 
-                Canvas.GetTop(ctrl) - _initialMousePosition.Y);
-
+            _XPos = ctrlPos.X;
+            _YPos = ctrlPos.Y;
 
             ItemSelected = ctrl;
             ItemSelected.Focusable = true;
@@ -234,13 +267,37 @@ namespace TemplateBuilder.ViewModel
         {
             ctrl.PreviewMouseLeftButtonDown += MouseLeftButtonDown;
             ctrl.PreviewMouseMove += MouseMove;
+            ctrl.PreviewKeyDown += KeyDown;
             ctrl.Cursor = Cursors.Hand;
             ctrl.Focusable = true;
-
+            ctrl.Uid = string.Format("Uid{0}", _Container.Children.Count + 1);
+            
             if (ctrl is ToggleButton || ctrl is Label)
             {
                 ctrl.PreviewMouseDoubleClick += CtrlOnPreviewMouseDoubleClick;
                 ctrl.MouseDoubleClick += MouseDoubleClick;
+            }
+        }
+
+        /// <summary>
+        /// To delete current control
+        /// </summary>
+        void KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                if (MessageBox.Show("Do you want eliminate this control?", "Are you sure?",
+                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    var ctrl = sender as UIElement;
+
+                    if (_Container.Children.Contains(ctrl))
+                    {
+                        _Container.Children.Remove(ctrl);
+                    }
+
+                    ItemSelected = null;
+                }
             }
         }
 
@@ -268,6 +325,7 @@ namespace TemplateBuilder.ViewModel
 
         public ProjectViewModel()
         {
+            Messenger.Default.Register<NewProjectMessage>(this, NewProject);
             Messenger.Default.Register<OpenProjectMessage>(this, OpenProject);
             Messenger.Default.Register<SaveProjectMessage>(this, SaveProject);
             Messenger.Default.Register<ProjectContainerMessage>(this, GetProjectContainer);

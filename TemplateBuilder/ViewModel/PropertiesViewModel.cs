@@ -44,7 +44,7 @@ namespace TemplateBuilder.ViewModel
         
         public PropertiesViewModel()
         {
-            AllProperties = false;
+            AllProperties = true;
             Messenger.Default.Register<ControlMessage>(this, SetSelectedControl);
         } 
 

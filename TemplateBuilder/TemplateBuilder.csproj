@@ -101,6 +101,7 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\Registries\ViewModelsRegistry.cs" />
     <Compile Include="Model\Messages\ControlMessage.cs" />
+    <Compile Include="Model\Messages\NewProjectMessage.cs" />
     <Compile Include="Model\Messages\FinishEditingMessage.cs" />
     <Compile Include="Model\Messages\ProjectContainerMessage.cs" />
     <Compile Include="Model\Messages\OpenProjectMessage.cs" />
@@ -183,6 +184,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PropertiesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Styles\rdStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
